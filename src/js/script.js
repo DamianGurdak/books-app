@@ -7,9 +7,10 @@
     templateOf: {
       books: '#template-book',
     },
-    containerOf:{
+    containerOf: {
       booksPannel: '.books-list',
-    }
+    },
+    bookImage: '.book__image',
   };
 
   const templates = {
@@ -17,6 +18,8 @@
       document.querySelector(select.templateOf.books).innerHTML
     ),
   };
+
+  const favoriteBooks = [];
 
   class BooksList {
     constructor() {
@@ -26,7 +29,7 @@
       thisBookList.initData();
       thisBookList.renderBooks();
       thisBookList.getElemenst();
-      // thisBookList.initActions();
+      thisBookList.initActions();
       // thisBookList.filerBooks();
       // thisBookList.determineRatingBgc();
     }
@@ -38,30 +41,50 @@
     }
 
     getElemenst() {
-      const thisBookList = this;
+      // const thisBookList = this;
     }
 
     renderBooks() {
       const thisBookList = this;
 
       for (const book of dataSource.books) {
+        // console.log('book:',book);
         /* [DONE] generate HTML based on template */
         const generateHTML = templates.bookList(book);
+        // console.log('generateHTML:',generateHTML)
 
         /* [DONE]  create DOMelement using utils.createElementFromHTML */
-        const elementDOM = utils.createDOMFromHTML(generateHTML);
+        thisBookList.elementDOM = utils.createDOMFromHTML(generateHTML);
+        // console.log('elementDOM:',elementDOM);
 
         /* [DONE] find menu container */
-        const bookWrapper = document.querySelector(select.containerOf.booksPannel);
+        const bookWrapper = document.querySelector(
+          select.containerOf.booksPannel
+        );
+        // console.log('bookWrapper:',bookWrapper);
 
         /* [DONE] add element to bookList */
-        bookWrapper.appendChild(elementDOM);
+        bookWrapper.appendChild(thisBookList.elementDOM);
       }
     }
 
-    // initActions() {
-    //   const thisBookList = this;
-    // }
+    initActions() {
+      const thisBookList = this;
+
+      const booksWrapper = thisBookList.elementDOM.querySelectorAll(select.bookImage);
+      console.log(booksWrapper);
+
+      for (let book of booksWrapper) {
+        book.addEventListener('dblclick', function (event) {
+          event.preventDefault();
+          book.classList.add('favorite');
+          const bookId = book.getAttribute('data-id');
+          favoriteBooks.push(bookId);
+        });
+      }
+
+      console.log('tab:', favoriteBooks);
+    }
 
     // filerBooks() {
     //   const thisBookList = this;
@@ -73,4 +96,5 @@
   }
 
   const app = new BooksList();
+  console.log(app);
 }
